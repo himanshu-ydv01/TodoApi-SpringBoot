@@ -1,15 +1,14 @@
 package org.example.todoapispring;
+import jakarta.websocket.server.PathParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/v1/todos")
 public class TodoController {
 
     private static List<Todo> todolist;
@@ -34,14 +33,24 @@ public class TodoController {
     }
      */
 
-    @GetMapping("/todos")
+    @GetMapping
     public ResponseEntity <List<Todo>> getTodos() {
         return ResponseEntity.ok(todolist);
     }
 
-    @PostMapping("/todos")
+    @PostMapping
     public ResponseEntity<Todo> CreateTodos(@RequestBody Todo newtodo){
         todolist.add(newtodo);
         return ResponseEntity.status(HttpStatus.CREATED).body(newtodo);
+    }
+
+    @GetMapping("/{todoId}")
+    public ResponseEntity<Todo>  getTodoById(@PathVariable long todoId){
+        for(Todo todo: todolist){
+            if(todo.getId() == todoId){
+                return ResponseEntity.ok(todo);
+            }
+        }
+        return ResponseEntity.notFound().build();
     }
 }
