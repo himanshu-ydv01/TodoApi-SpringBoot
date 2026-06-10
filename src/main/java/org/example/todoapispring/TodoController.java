@@ -1,9 +1,8 @@
 package org.example.todoapispring;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,13 +10,16 @@ import java.util.List;
 @RequestMapping("/api/v1/todos")
 public class TodoController {
 
-    @Autowired
     private TodoService todoService;    // this is called composition in OOP
-
+    private TodoService todoService2;
     private static List<Todo> todolist;
 
-    public TodoController() {
-        //this.todoService = new FakeTodoService();
+    public TodoController(
+            @Qualifier("fakeTodoService") TodoService todoService,
+            @Qualifier("anotherTodoService" ) TodoService todoService2) {
+
+        this.todoService = todoService;
+        this.todoService2 = todoService2;
 
         todolist = new ArrayList<>();
         todolist.add(new Todo(1,false,"todo 1",1));
